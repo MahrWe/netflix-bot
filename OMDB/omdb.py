@@ -2,7 +2,7 @@ import urllib3
 import json
 from .film import Film
 
-api_key = 'c65f2dbe'
+api_key = ## Add your own APIkey here!
 base_url = 'http://omdbapi.com/?tomatoes=true'
 
 def get_film_by_title(title):

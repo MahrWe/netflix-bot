@@ -6,7 +6,7 @@ import sqlite3
 
 
 class DBMS:
-	
+
 	def __init__(self, db_name="netflix_and_chill.db"):
 		# Connection to database
 		self.db_name = db_name
@@ -14,18 +14,18 @@ class DBMS:
 		self.cursor = self.connection.cursor()
 
 		# Table's creation
-		sql = """CREATE TABLE IF NOT EXISTS netflix_and_chill ( 
-			id_chat INTEGER NOT NULL, 
+		sql = """CREATE TABLE IF NOT EXISTS netflix_and_chill (
+			id_chat INTEGER NOT NULL,
 			movie_id INTEGER NOT NULL,
 			movie_name VARCHAR(50) NOT NULL,
 			category VARCHAR(50),
 			PRIMARY KEY (id_chat, movie_id)
 		);"""
 
-		
+	
 		if self.cursor.execute(sql): print("Table created with success")
 		else: print("Error while creating table")
-		
+
 		# Exiting properly...
 		self.cursor.close()
 		self.connection.commit()
@@ -46,7 +46,7 @@ class DBMS:
 		if correctly_inserted: print("Row inserted")
 		else: print("Error inserting row")
 		# Exiting properly...
-		
+
 		self.cursor.close()
 		self.connection.commit()
 		self.connection.close()
@@ -61,7 +61,7 @@ class DBMS:
 			return False
 		sql = """DELETE FROM netflix_and_chill WHERE id_chat=? AND movie_id=? AND movie_name=?"""
 		delete_worked = self.cursor.execute(sql, row)
-		
+
 		# Exiting properly...
 		self.cursor.close()
 		self.connection.commit()
@@ -110,8 +110,8 @@ class DBMS:
 			sql = """SELECT * FROM netflix_and_chill WHERE id_chat = ? LIMIT ?;"""
 			arguments = (chat_id, number_of_movies)
 			self.cursor.execute(sql, arguments)
-			
-		
+
+
 		rows = self.cursor.fetchall()
 		movies = []
 		for row in rows:
@@ -120,5 +120,5 @@ class DBMS:
 		self.cursor.close()
 		self.connection.commit()
 		self.connection.close()
-		
+
 		return movies

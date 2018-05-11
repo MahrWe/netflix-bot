@@ -74,7 +74,7 @@ class DBMS:
 		self.cursor = self.connection.cursor()
 		# import pdb; pdb.set_trace()
 		sql = """SELECT count(*) FROM netflix_and_chill WHERE id_chat=? AND movie_id=?;"""
-                print(row[0:2])
+		print(row[0:2])
 		results = self.cursor.execute(sql, row[0:2])
 
 		count = self.cursor.fetchone()[0];

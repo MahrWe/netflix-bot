@@ -1,5 +1,3 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-
 from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, CallbackQueryHandler
 import logging
 
@@ -25,12 +23,10 @@ class Telegram_bot(object):
 	def add_function(self, function, name):
 		function_handler = CommandHandler(name, function, pass_args=True)
 		self.dispatcher.add_handler(function_handler)
+
 	def add_callback_query(self, callback):
-
 		callback_handler = CallbackQueryHandler(callback)
-
 		self.dispatcher.add_handler(callback_handler)
-
 
 	## Add message handling, i.e. the bot answer based on messaged and
 	## not on functions.

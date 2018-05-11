@@ -1,4 +1,4 @@
-import urllib2
+from urllib.error import URLError
 import urllib3
 import json
 import sys
@@ -20,7 +20,7 @@ def get_film_by_title(title):
 		sys.stdout.flush()
 		if not film['Response']: return None
 		else: return Film(film)
-	except urllib2.URLError:
+	except URLError:
 		print('No filmz :(( got an error code')
 		sys.stdout.flush()
 		return None
@@ -34,7 +34,7 @@ def get_film_by_id(id):
 		film = json.loads(response.decode('utf-8'))
 		if not film['Response']: return None
 		else: return Film(film)
-	except urllib2.URLError:
+	except URLError:
 		print('No filmz :(( got an error code')
 		sys.stdout.flush()
 		return None

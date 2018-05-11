@@ -1,2 +1,5 @@
 *.pyc
 *.db
+myapi.keys
+__pycache__
+.spyproject

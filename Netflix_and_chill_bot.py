@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from Telegram_bot import *
 from db import DBMS
-from omdb import omdb
 from entry import Entry
 
 class Netflix_and_chill_bot(Telegram_bot):
@@ -49,7 +49,7 @@ class Netflix_and_chill_bot(Telegram_bot):
 			text = 'For request ' + movie.name + ', found:'
 			bot.sendMessage(chat_id=chat_id, text=text)
 			bot.sendMessage(chat_id=chat_id, text=movie.film.get_text_message())
-			bot.sendPhoto(chat_id=chat_id, photo=film.get_poster())
+			bot.sendPhoto(chat_id=chat_id, photo=movie.film.get_poster())
 			return True
 		else:
 			bot.sendMessage(chat_id=update.message.chat_id, text='Unable to find <<' + movie.name + '>> in Internet Movie database')
@@ -62,7 +62,7 @@ class Netflix_and_chill_bot(Telegram_bot):
 			update.message.reply_text(text_answer, reply_markup=reply_markup)
 		else:
 			movie = Entry(args)
- 			self.respond_with_movie(bot, update, movie)
+			self.respond_with_movie(bot, update, movie)
 
 	def handle_callback(self, bot, update):
 		query = update.callback_query
@@ -163,7 +163,7 @@ class Netflix_and_chill_bot(Telegram_bot):
 
 # ------------------------------------------------------------#
 ## Initialize bot by http token given by Telegram
-token = ## Add your own Bottoken here!
+token = "" ## Add your own Bottoken here!
 bot = Netflix_and_chill_bot(token)
 # ------------------------------------------------------------#
 

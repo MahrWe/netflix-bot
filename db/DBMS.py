@@ -1,5 +1,5 @@
 import sqlite3
-
+import sys
 ## Not as abstract as I would like... For generalizing, a SQL parser
 ## is required. So up to know, a specific model according to our pourpose
 ## is implemented below.
@@ -25,6 +25,7 @@ class DBMS:
 	
 		if self.cursor.execute(sql): print("Table created with success")
 		else: print("Error while creating table")
+		sys.stdout.flush()
 
 		# Exiting properly...
 		self.cursor.close()
@@ -32,21 +33,18 @@ class DBMS:
 		self.connection.close()
 
 	# Row should be a tuple of parameters respecting types of the table
-	def insert_film(self, row, with_cat):
-		if self.film_exists(row, with_cat): return False
+	def insert_film(self, row):
+		if self.film_exists(row): return False
 		self.connection = sqlite3.connect(self.db_name)
 		self.cursor = self.connection.cursor()
-
-		if with_cat:
-			sql = """INSERT INTO netflix_and_chill(id_chat, movie_id, movie_name, category) VALUES (?, ?, ?, ?)"""
-		else:
-			sql = """INSERT INTO netflix_and_chill(id_chat, movie_id, movie_name) VALUES (?, ?, ?)"""
+		sql = """INSERT INTO netflix_and_chill(id_chat, movie_id, movie_name, category) VALUES (?, ?, ?, ?);"""
 
 		correctly_inserted = self.cursor.execute(sql, row)
 		if correctly_inserted: print("Row inserted")
 		else: print("Error inserting row")
-		# Exiting properly...
+		sys.stdout.flush()
 
+		# Exiting properly...
 		self.cursor.close()
 		self.connection.commit()
 		self.connection.close()
@@ -55,12 +53,12 @@ class DBMS:
 
 	# Row should be a tuple of parameters respecting types of the table
 	def delete_film(self, row):
+		if not self.film_exists(row): return False
 		self.connection = sqlite3.connect(self.db_name)
 		self.cursor = self.connection.cursor()
-		if not self.film_exists(row, False):
-			return False
-		sql = """DELETE FROM netflix_and_chill WHERE id_chat=? AND movie_id=? AND movie_name=?"""
-		delete_worked = self.cursor.execute(sql, row)
+
+		sql = """DELETE FROM netflix_and_chill WHERE id_chat=? AND movie_id=?;"""
+		delete_worked = self.cursor.execute(sql, row[0:2])
 
 		# Exiting properly...
 		self.cursor.close()
@@ -70,19 +68,14 @@ class DBMS:
 		return delete_worked
 
 	# Row should be a tuple of parameters respecting types of table
-	def film_exists(self, row, with_cat):
+	def film_exists(self, row):
 		# print("row:", row)
 		self.connection = sqlite3.connect(self.db_name)
 		self.cursor = self.connection.cursor()
 		# import pdb; pdb.set_trace()
-		if with_cat:
-			results = self.cursor.execute(
-				"""SELECT count(*) FROM netflix_and_chill WHERE id_chat=? AND movie_id=? AND movie_name=? AND category=?""",
-				row)
-		else:
-			results = self.cursor.execute(
-				"""SELECT count(*) FROM netflix_and_chill WHERE id_chat=? AND movie_id=? AND movie_name=?""",
-				row)
+		sql = """SELECT count(*) FROM netflix_and_chill WHERE id_chat=? AND movie_id=?;"""
+                print(row[0:2])
+		results = self.cursor.execute(sql, row[0:2])
 
 		count = self.cursor.fetchone()[0];
 
@@ -93,9 +86,11 @@ class DBMS:
 
 		if count:
 			print("There were results")
+			sys.stdout.flush()
 			return True
 		else:
 			print("No results")
+			sys.stdout.flush()
 			return False
 
 	# Get movies from a chat ! (For example... :P)
@@ -103,14 +98,13 @@ class DBMS:
 		self.connection = sqlite3.connect(self.db_name)
 		self.cursor = self.connection.cursor()
 		if category:
-			sql = """SELECT * FROM netflix_and_chill WHERE id_chat = ? AND category = ? LIMIT ?;"""
-			arguments = (chat_id,  category, number_of_movies)
-			self.cursor.execute(sql, arguments)
+			sql = """SELECT * FROM netflix_and_chill WHERE id_chat = ? AND category = ? ORDER BY RANDOM() LIMIT ?;"""
+			arguments = (chat_id, category, number_of_movies)
 		else:
-			sql = """SELECT * FROM netflix_and_chill WHERE id_chat = ? LIMIT ?;"""
+			sql = """SELECT * FROM netflix_and_chill WHERE id_chat = ? ORDER BY RANDOM() LIMIT ?;"""
 			arguments = (chat_id, number_of_movies)
-			self.cursor.execute(sql, arguments)
 
+		self.cursor.execute(sql, arguments)
 
 		rows = self.cursor.fetchall()
 		movies = []

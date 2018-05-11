@@ -9,3 +9,5 @@ class Film:
 	def get_poster(self): return self.data['Poster']
 	def get_description(self): return self.data['Plot']
 	def get_director(self): return self.data['Director']
+	def get_text_message(self): return 'Title: ' + self.data['Title'] + '\nGenre: ' + self.data['Genre'] + '\nIMDB Rating: ' + self.data['imdbRating'] + '\nDescription: ' + self.data['Plot']
+	def get_response(self): return self.data['Response']
